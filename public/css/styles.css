@@ -1,0 +1,21 @@
+/* Custom styles */
+.book-card .card-img-top {
+    height: 200px;
+    object-fit: contain;
+    background: #f5f5f5;
+}
+
+/* Edit form specific styles */
+form textarea {
+    min-height: 120px;
+}
+  
+.btn-outline-danger {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+  
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}

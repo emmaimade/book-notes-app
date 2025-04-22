@@ -1,0 +1,88 @@
+<!-- views/books/edit.ejs -->
+<%- include('../partials/header') %>
+
+<div class="container mt-4">
+  <h1 class="mb-4">Edit Book</h1>
+
+  <form action="/books/<%= book.id %>" method="POST">
+    <div class="mb-3">
+      <label class="form-label">Title*</label>
+      <input 
+        type="text" 
+        name="title" 
+        class="form-control" 
+        value="<%= book.title %>" 
+        required
+      >
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Author*</label>
+      <input 
+        type="text" 
+        name="author" 
+        class="form-control" 
+        value="<%= book.author %>" 
+        required
+      >
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">ISBN (for cover)</label>
+      <input 
+        type="text" 
+        name="isbn" 
+        class="form-control" 
+        value="<%= book.isbn || '' %>"
+      >
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Summary</label>
+      <textarea 
+        name="summary" 
+        class="form-control" 
+        rows="3"
+      ><%= book.summary || '' %></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Your Notes*</label>
+      <textarea 
+        name="notes" 
+        class="form-control" 
+        rows="5" 
+        required
+      ><%= book.notes || '' %></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Rating (1-5)*</label>
+      <input 
+        type="number" 
+        name="rating" 
+        min="1" 
+        max="5" 
+        class="form-control" 
+        value="<%= book.rating %>" 
+        required
+      >
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Date Read*</label>
+      <input 
+        type="date" 
+        name="date_read" 
+        class="form-control" 
+        value="<%= book.date_read.toISOString().split('T')[0] %>" 
+        required
+      >
+    </div>
+
+    <button type="submit" class="btn btn-primary me-2">Save Changes</button>
+    <a href="/books/<%= book.id %>" class="btn btn-outline-danger">Cancel</a>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>
