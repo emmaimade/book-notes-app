@@ -1,26 +1,24 @@
 <div class="col">
     <div class="card h-100">
-        <a href="/books/<%= book.id %>">
-            <img 
-                src="/book-cover/<%= book.id %>" 
-                class="card-img-top" 
-                alt="<%= book.title %>"
-                onerror="this.src='/images/no-cover.jpg'"
-            >
-            <div class="card-body">
-                <h5 class="card-title"><%= book.title %></h5>
-                <h6 class="card-subtitle mb-2 text-muted"><%= book.author %></h6>
-                <div class="mb-2">
-                <% for (let i = 0; i < book.rating; i++) { %>
-                    <span class="text-warning">★</span>
-                <% } %>
-                </div>
-                <p class="card-text"><%= book.summary?.slice(0, 100) %>...</p>
-                <a href="/books/<%= book.id %>" class="btn btn-sm btn-primary">View Notes</a>
+        <img 
+            src="/book-cover/<%= book.isbn %>" 
+            class="card-img-top" 
+            alt="<%= book.title %>"
+            onerror="this.src='/images/no-cover.jpg'"
+        >
+        <div class="card-body">
+            <h5 class="card-title"><%= book.title %></h5>
+            <h6 class="card-subtitle mb-2 text-muted"><%= book.author %></h6>
+            <div class="mb-2">
+            <% for (let i = 0; i < book.rating; i++) { %>
+                <span class="text-warning">★</span>
+            <% } %>
             </div>
-            <div class="card-footer text-muted">
-                Read on: <%= book.date_read.toLocaleDateString() %>
-            </div>
-        </a>
+            <p class="card-text"><%= book.summary?.slice(0, 100) %>...</p>
+            <a href="/books/<%= book.id %>" class="btn btn-sm btn-primary">View Notes</a>
+        </div>
+        <div class="card-footer text-muted">
+            Read on: <%= book.date_read.toLocaleDateString() %>
+        </div>
     </div>
   </div>

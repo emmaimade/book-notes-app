@@ -1,6 +1,6 @@
 /* Custom styles */
-.book-card .card-img-top {
-    height: 200px;
+.card .card-img-top {
+    height: 220px;
     object-fit: contain;
     background: #f5f5f5;
 }
