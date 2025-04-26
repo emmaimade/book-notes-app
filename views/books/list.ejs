@@ -9,7 +9,11 @@
 
 <!-- Book Grid -->
 <div class="row row-cols-1 row-cols-md-3 g-4">
-  <% books.forEach(book => { %>
-    <%- include('../partials/book-card', { book }) %>
-  <% }) %>
+  <% if (books.length !== 0) {%>
+    <% books.forEach(book => { %>
+      <%- include('../partials/book-card', { book }) %>
+    <% }) %>
+  <% } else { %>
+      <h2>No book found</h2>
+  <% } %>
 </div>
