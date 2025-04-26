@@ -1,4 +1,4 @@
-import express, { response } from "express";
+import express from "express";
 import bodyParser from "body-parser";
 import axios from "axios";
 import pg from 'pg';
@@ -6,7 +6,6 @@ import dotenv from "dotenv";
 import expressEjsLayouts from "express-ejs-layouts";
 import path from "path";
 import { fileURLToPath } from "url";
-import e from "express";
 
 dotenv.config()
 
@@ -41,6 +40,12 @@ async function getBooks() {
 // home endpoint
 app.get("/", async (req, res) => {
     books = await getBooks();
+
+    //handle no books
+    if (books.length === 0) {
+      return res.status(404).render("error", { message: "No books found" });
+    }
+
     res.render("books/list.ejs", { books })
 })
 
@@ -83,20 +88,57 @@ app.get("/books", async (req, res) => {
     }
 })
 
+// get add book page
+app.get("/books/add", (req, res) => {
+    res.render("books/add.ejs")
+})
+
 // get book details
 app.get("/books/:id", async (req, res) => {
     try {
         const id = req.params.id;
 
         const result = await db.query("SELECT * FROM books WHERE id = $1", [id]);
-        const [book] = result.rows
-        console.log(book)
+
+        // Handle book not found
+        if (result.rows.length === 0) {
+          return res.status(404).render("error", { message: "Book not found" });
+        }
         
-        res.render("books/detail.ejs", { book });
+        res.render("books/detail.ejs", { book: result.rows[0] });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
 })
+
+// add book
+app.post("/add", async (req, res) => {
+    try {
+      const {title, author, isbn, summary, notes, rating, date_read} = req.body;
+
+      if (!title || !author || !isbn || !date_read) {
+        return res.status(400).render("error", { message: "Missing required fields" });
+      }
+
+      await db.query(
+        "INSERT INTO books (title, author, isbn, summary, notes, rating, date_read) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+        [
+          title,
+          author,
+          isbn,
+          summary || null,
+          notes || null,
+          rating || null,
+          date_read,
+        ]
+      );
+
+      res.redirect("/");
+    } catch (error) {
+      console.log(error);
+      res.status(500).render("error", { message: "Error adding book" });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
