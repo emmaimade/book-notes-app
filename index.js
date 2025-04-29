@@ -83,6 +83,13 @@ app.get("/books", async (req, res) => {
 
           return res.render("books/list.ejs", { books });
         }
+
+        if (sort === "title") {
+          const result = await db.query("SELECT * FROM books ORDER BY title ASC");
+          const books = result.rows;
+
+          return res.render("books/list.ejs", { books });
+        }
     } catch (error) {
         console.log(error)
         res.status(500).res.render("error", { message: "Internal Server Error" });
