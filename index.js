@@ -221,6 +221,24 @@ app.post("/books/:id", async (req, res) => {
     }
 });
 
+// delete book
+app.post("/books/delete/:id", async (req, res) => {
+  try {
+      const id = req.params.id
+
+      const book = await db.query("SELECT id FROM books WHERE id = $1", [id]);
+      if (!book.rows[0]) {
+        return res.status(404).res.render("error", { message: "Book not found" });
+      }
+
+      await db.query("DELETE FROM books WHERE id = $1", [id]);
+      res.redirect('/');
+  } catch (error) {
+    console.log("Delete Error:", error);
+    res.status(500).res.redirect("error", { message: "Failed to delete book" });
+  }
+})
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
