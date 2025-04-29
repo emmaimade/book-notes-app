@@ -85,6 +85,7 @@ app.get("/books", async (req, res) => {
         }
     } catch (error) {
         console.log(error)
+        res.status(500).res.render("error", { message: "Internal Server Error" });
     }
 })
 
@@ -93,11 +94,22 @@ app.get("/books/add", (req, res) => {
     res.render("books/add.ejs")
 })
 
+// get edit book page
+app.get("/books/edit/:id", async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await db.query("SELECT * FROM books WHERE id = $1", [id]);
+        res.render("books/edit.ejs", { book: result.rows[0] });
+    } catch (error) {
+        console.log(error)
+        res.status(500).res.render("error", { message: "Internal Server Error" });
+    }
+});
+
 // get book details
 app.get("/books/:id", async (req, res) => {
     try {
         const id = req.params.id;
-
         const result = await db.query("SELECT * FROM books WHERE id = $1", [id]);
 
         // Handle book not found
@@ -108,6 +120,7 @@ app.get("/books/:id", async (req, res) => {
         res.render("books/detail.ejs", { book: result.rows[0] });
     } catch (error) {
       console.log(error);
+      res.status(500).res.render("error", { message: "Internal Server Error" });
     }
 })
 
@@ -140,6 +153,67 @@ app.post("/add", async (req, res) => {
     }
 });
 
+// edit book
+app.post("/books/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const newData = req.body;
+  
+      const currentBook = await db.query("SELECT * FROM books WHERE id = $1", [id]);
+  
+      if (currentBook.rows.length === 0) {
+        return res.status(404).render("error", { message: "Book not found" });
+      }
+  
+      const changes = {};
+      const current = currentBook.rows[0];
+  
+      if (newData.title && newData.title !== current.title) changes.title = newData.title;
+      if (newData.author && newData.author !== current.author) changes.author = newData.author;
+      if (newData.isbn && newData.isbn !== current.isbn) changes.isbn = newData.isbn;
+
+      // date handling
+      if (newData.date_read) {
+        const currentDateISO = new Date(current.date_read).toISOString().split('T')[0];
+        if (newData.date_read !== currentDateISO) {
+          changes.date_read = newData.date_read;
+        }
+      }
+  
+      if (newData.summary != current.summary) changes.summary = newData.summary || null;
+      if (newData.notes !== current.notes) changes.notes = newData.notes || null;
+      if (newData.rating !== current.rating) changes.rating = newData.rating || null;
+  
+      if (Object.keys(changes).length > 0) {
+        const setClauses = [];
+        const values = [];
+        let paramIndex = 1;
+  
+        for (const [key, value] of Object.entries(changes)) {
+          setClauses.push(`${key} = $${paramIndex}`);
+          values.push(value);
+          paramIndex++;
+        }
+  
+        const query = `
+          UPDATE books 
+          SET ${setClauses.join(", ")} 
+          WHERE id = $${paramIndex}
+        `;
+        
+        // add id to values
+        values.push(id);
+  
+        await db.query(query, values);
+      }
+  
+      res.redirect(`/books/${id}`);
+    } catch (error) {
+      console.log("Update error:", error);
+      res.status(500).render("error", { message: "Failed to update book" });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
-})
+});

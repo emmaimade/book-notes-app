@@ -1,5 +1,4 @@
 <!-- views/books/edit.ejs -->
-<%- include('../partials/header') %>
 
 <div class="container mt-4">
   <h1 class="mb-4">Edit Book</h1>
@@ -32,7 +31,8 @@
       <input 
         type="text" 
         name="isbn" 
-        class="form-control" 
+        class="form-control"
+        required 
         value="<%= book.isbn || '' %>"
       >
     </div>
@@ -47,25 +47,23 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Your Notes*</label>
+      <label class="form-label">Your Notes</label>
       <textarea 
         name="notes" 
         class="form-control" 
-        rows="5" 
-        required
+        rows="5"
       ><%= book.notes || '' %></textarea>
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Rating (1-5)*</label>
+      <label class="form-label">Rating (1-5)</label>
       <input 
         type="number" 
         name="rating" 
         min="1" 
         max="5" 
         class="form-control" 
-        value="<%= book.rating %>" 
-        required
+        value="<%= book.rating %>"
       >
     </div>
 
@@ -84,5 +82,3 @@
     <a href="/books/<%= book.id %>" class="btn btn-outline-danger">Cancel</a>
   </form>
 </div>
-
-<%- include('../partials/footer') %>
