@@ -9,16 +9,46 @@
         <div class="card-body">
             <h5 class="card-title"><%= book.title %></h5>
             <h6 class="card-subtitle mb-2 text-muted"><%= book.author %></h6>
-            <div class="mb-2">
-            <% for (let i = 0; i < book.rating; i++) { %>
-                <span class="text-warning">★</span>
-            <% } %>
+        
+            <% 
+            const rating = parseFloat(book.rating);
+            const fullStars = Math.floor(rating);
+            const decimalPart = rating - fullStars;
+            const totalStars = 5;
+            %>
+        
+            <div class="d-flex align-items-center">
+                <div class="star-rating me-2" 
+                    role="img" 
+                    aria-label="Rating: <%= rating.toFixed(1) %> out of <%= totalStars %>">
+                    
+                    <% for (let i = 0; i < totalStars; i++) { %>
+                        <% if (i < fullStars) { %>
+                            <!-- Full star -->
+                            <i class="bi bi-star-fill text-warning"></i>
+                        <% } else if (i === fullStars && decimalPart >= 0.5) { %>
+                            <!-- Half star -->
+                            <i class="bi bi-star-half text-warning"></i>
+                        <% } else { %>
+                            <!-- Empty star -->
+                            <i class="bi bi-star text-warning"></i>
+                        <% } %>
+                    <% } %>
+                </div>
+        
+                <small class="text-muted">
+                    <%= rating.toFixed(1) %>
+                    <span class="visually-hidden">out of 5 stars</span>
+                </small>
             </div>
+
+        
             <p class="card-text"><%= book.summary?.slice(0, 100) %>...</p>
-            <a href="/books/<%= book.id %>" class="btn btn-sm btn-primary">View Notes</a>
+            <a href="/books/<%= book.id %>" class="btn btn-sm btn-outline-primary">View Details</a>
         </div>
+        
         <div class="card-footer text-muted">
-            Read on: <%= book.date_read.toLocaleDateString() %>
+            Read on: <%= new Date(book.date_read).toLocaleDateString('en-GB') %>
         </div>
     </div>
   </div>

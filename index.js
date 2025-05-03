@@ -134,10 +134,16 @@ app.get("/books/:id", async (req, res) => {
 // add book
 app.post("/add", async (req, res) => {
     try {
-      const {title, author, isbn, summary, notes, rating, date_read} = req.body;
+      const {title, author, isbn, summary, notes, date_read} = req.body;
+      let rating = req.body.rating;
 
       if (!title || !author || !isbn || !date_read) {
         return res.status(400).render("error", { message: "Missing required fields" });
+      }
+
+      rating = parseFloat(rating);
+      if (isNaN(rating) || rating < 0 || rating > 5) {
+        return res.status(400).render("error", { message: "Invalid rating" });
       }
 
       await db.query(
@@ -190,7 +196,7 @@ app.post("/books/:id", async (req, res) => {
       if (newData.summary != current.summary) changes.summary = newData.summary || null;
       if (newData.notes !== current.notes) changes.notes = newData.notes || null;
       if (newData.rating !== current.rating) changes.rating = newData.rating || null;
-  
+
       if (Object.keys(changes).length > 0) {
         const setClauses = [];
         const values = [];
