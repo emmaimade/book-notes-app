@@ -62,8 +62,12 @@ CREATE TABLE books (
 
 4. Create `.env` file:
 ```env
-dbPassword =
-PORT =
+PG_USER=
+PG_HOST=
+PG_DATABASE=
+PG_PASSWORD=
+PG_PORT=
+PORT=
 ```
 
 5. Start the server:
