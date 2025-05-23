@@ -14,7 +14,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const port = process.env.PORT;
 
-const db = new pg.Client({
+const db = new pg.Pool({
   user: process.env.PG_USER,
   host: process.env.PG_HOST,
   database: process.env.PG_DATABASE,
@@ -22,7 +22,6 @@ const db = new pg.Client({
   port: process.env.PG_PORT
 });
 
-db.connect();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
