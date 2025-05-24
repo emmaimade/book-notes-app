@@ -1,0 +1,84 @@
+<div class="container mt-5" style="max-width: 400px;">
+  <h1 class="mb-4 text-center">Register</h1>
+  <form id="registerForm" action="/auth/register" method="POST" novalidate>
+    <div class="mb-3">
+      <label for="email" class="form-label">E-mail</label>
+      <input type="email" class="form-control" name="email" id="email" required>
+      <div class="invalid-feedback">Please enter a valid email.</div>
+    </div>
+
+    <!-- PASSWORD FIELD WITH EYE ICON INLINE -->
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <div class="input-group">
+        <input type="password" class="form-control" name="password" id="password" required minlength="6">
+        <span class="input-group-text" style="cursor: pointer;" onclick="togglePassword('password', this)">
+          <i class="bi bi-eye"></i>
+        </span>
+      </div>
+      <div class="form-text">At least 6 characters.</div>
+      <div class="invalid-feedback">Please enter a password (min 6 characters).</div>
+    </div>
+
+    <!-- CONFIRM PASSWORD FIELD WITH EYE ICON INLINE -->
+    <div class="mb-3">
+      <label for="confirmPassword" class="form-label">Confirm Password</label>
+      <div class="input-group">
+        <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" required>
+        <span class="input-group-text" style="cursor: pointer;" onclick="togglePassword('confirmPassword', this)">
+          <i class="bi bi-eye"></i>
+        </span>
+      </div>
+      <div class="invalid-feedback" id="confirmFeedback">Passwords must match.</div>
+    </div>
+
+    <button id="submitBtn" type="submit" class="btn btn-primary w-100" disabled>Register</button>
+  </form>
+  <p class="mt-3 text-center">
+    Already have an account? <a href="/auth/login">Log in here</a>.
+  </p>
+</div>
+
+<script>
+  // Toggle password field & swap icon
+  function togglePassword(fieldId, iconSpan) {
+    const input = document.getElementById(fieldId);
+    const icon = iconSpan.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.replace('bi-eye', 'bi-eye-slash');
+    } else {
+      input.type = 'password';
+      icon.classList.replace('bi-eye-slash', 'bi-eye');
+    }
+  }
+
+  // Form validation logic (same as before)
+  const form = document.getElementById('registerForm');
+  const email = form.email;
+  const pwd = form.password;
+  const confirmPwd = form.confirmPassword;
+  const submitBtn = document.getElementById('submitBtn');
+
+  form.addEventListener('input', () => {
+    const emailValid = email.checkValidity();
+    const pwdValid = pwd.checkValidity();
+    const match = pwd.value === confirmPwd.value && confirmPwd.value.length > 0;
+
+    if (!match) {
+      confirmPwd.classList.add('is-invalid');
+    } else {
+      confirmPwd.classList.remove('is-invalid');
+      confirmPwd.classList.add('is-valid');
+    }
+
+    submitBtn.disabled = !(emailValid && pwdValid && match);
+  });
+
+  form.addEventListener('submit', (e) => {
+    if (!form.checkValidity() || pwd.value !== confirmPwd.value) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  });
+</script>

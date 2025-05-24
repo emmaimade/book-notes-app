@@ -1,0 +1,12 @@
+
+<div class="hero">
+  <h1>Welcome to Book Notes</h1>
+  <p>Your personal reading journal—keep track of what you’ve read, what you think, and how you rate each book.</p>
+
+  <% if (!currentUser) { %>
+    <a href="/auth/login" class="btn btn-primary btn-md">Log In</a>
+    <a href="/auth/register" class="btn btn-outline-secondary btn-md">Sign‑up</a>
+  <% } else { %>
+    <a href="/books" class="btn">View My Notes</a>
+  <% } %>
+</div>

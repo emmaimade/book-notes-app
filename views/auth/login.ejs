@@ -1,0 +1,90 @@
+<div class="container mt-5" style="max-width: 400px;">
+  <h1 class="mb-4 text-center">Log In</h1>
+  <form id="loginForm" action="/auth/login" method="POST" novalidate>
+    <div class="mb-3">
+      <label for="email" class="form-label">E-mail</label>
+      <input
+        type="email"
+        class="form-control"
+        name="email"
+        id="email"
+        required
+      >
+      <div class="invalid-feedback">
+        Please enter a valid email address.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <div class="input-group">
+        <input
+          type="password"
+          class="form-control"
+          name="password"
+          id="password"
+          required
+        >
+        <span
+          class="input-group-text"
+          style="cursor: pointer;"
+          onclick="togglePassword('password', this)"
+        >
+          <i class="bi bi-eye"></i>
+        </span>
+      </div>
+      <div class="invalid-feedback">
+        Please enter your password.
+      </div>
+    </div>
+
+    <button id="loginBtn" type="submit" class="btn btn-primary w-100" disabled>
+      Log In
+    </button>
+  </form>
+
+  <p class="mt-3 text-center">
+    Don’t have an account? <a href="/auth/register">Register here</a>.
+  </p>
+</div>
+
+<script>
+  // Toggle show/hide password
+  function togglePassword(fieldId, iconSpan) {
+    const input = document.getElementById(fieldId);
+    const icon = iconSpan.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.replace('bi-eye', 'bi-eye-slash');
+    } else {
+      input.type = 'password';
+      icon.classList.replace('bi-eye-slash', 'bi-eye');
+    }
+  }
+
+  // Enable button only when valid
+  const form = document.getElementById('loginForm');
+  const email = form.email;
+  const pwd = form.password;
+  const loginBtn = document.getElementById('loginBtn');
+
+  form.addEventListener('input', () => {
+    const valid = email.checkValidity() && pwd.checkValidity();
+    loginBtn.disabled = !valid;
+    // show validation feedback
+    [email, pwd].forEach(el => {
+      if (el.checkValidity()) {
+        el.classList.remove('is-invalid');
+      } else {
+        el.classList.add('is-invalid');
+      }
+    });
+  });
+
+  form.addEventListener('submit', (e) => {
+    if (!form.checkValidity()) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  });
+</script>
