@@ -65,5 +65,6 @@ export const register = async (req, res) => {
 // login
 export const login = passport.authenticate("local", {
     successRedirect: "/books",
-    failureRedirect: "/auth/login"
+    failureRedirect: "/auth/login",
+    failureFlash: true
 });

@@ -10,7 +10,8 @@ import flash from "express-flash";
 
 import db from "./config/db.js";
 import authRoutes from "./routes/authRoute.js";
-import { setUser, ensureAuth } from "./middleware/auth.js";
+import bookRoutes from "./routes/bookRoute.js";
+import { setUser } from "./middleware/auth.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -43,7 +44,8 @@ app.use(passport.session());
 
 app.use(setUser);
 
-app.use("/", authRoutes);
+app.use('/', authRoutes);
+app.use('/books', bookRoutes);
 
 // home endpoint
 // app.get("/", async (req, res) => {

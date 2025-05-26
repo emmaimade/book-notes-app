@@ -5,41 +5,54 @@ import bcrypt from "bcrypt";
 import db from "../config/db.js";
 
 passport.use(
-  new Strategy(async function verify(email, password, cb) {
-    try {
-      const result = await db.query("SELECT * FROM users WHERE email =$1", [
-        email,
-      ]);
-      if (result.rows.length > 0) {
-        const user = result.rows[0];
-        const storedHashedPassword = user.password;
-        bcrypt.compare(password, storedHashedPassword, (err, valid) => {
-          if (err) {
-            console.log("Error comparing passwords:", err);
-            return cb(err);
-          } else {
-            if (valid) {
-              return cb(null, user);
+  new Strategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+    },
+    async function verify(email, password, cb) {
+      try {
+        const result = await db.query("SELECT * FROM users WHERE email =$1", [
+          email,
+        ]);
+        if (result.rows.length > 0) {
+          const user = result.rows[0];
+          const storedHashedPassword = user.password;
+          bcrypt.compare(password, storedHashedPassword, (err, valid) => {
+            if (err) {
+              console.log("Error comparing passwords:", err);
+              return cb(err);
             } else {
-              req.flash("error", "Incorrect password");
-              return cb(null, false);
+              if (valid) {
+                return cb(null, user);
+              } else {
+                return cb(null, false, { message: "Incorrect password" });
+              }
             }
-          }
-        });
-      } else {
-        req.flash("error", "User not found");
-        return cb("User not found");
+          });
+        } else {
+          return cb(null, false, { message: "User not found" });
+        }
+      } catch (err) {
+        console.log("Error verifying user:", err);
       }
-    } catch (err) {
-      console.log("Error verifying user:", err);
     }
-  })
+  )
 );
 
 passport.serializeUser((user, cb) => {
-  cb(null, user);
+  cb(null, user.id);
 });
 
-passport.deserializeUser((user, cb) => {
-  cb(null, user);
+passport.deserializeUser(async (id, cb) => {
+  try {
+    const { rows } = await db.query(
+      "SELECT id, email FROM users WHERE id = $1",
+      [id]
+    );
+    cb(null, rows[0] || false);
+  } catch (err) {
+    console.log("Error deserializing user:", err);
+    cb(err);
+  }
 });
