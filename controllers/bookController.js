@@ -50,25 +50,6 @@ export const getBookCover = async (req, res) => {
   }
 };
 
-// export const getBookBySort = async (req, res) => {
-//   try {
-    
-//       const books = result.rows;
-
-//       return res.render("books/list.ejs", { books });
-//     }
-
-   
-//       const books = result.rows;
-
-//       return res.render("books/list.ejs", { books });
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).render("error", { message: "Internal Server Error" });
-//   }
-// };
-
 //get edit book page
 export const getEditBook = async (req, res) => {
   try {

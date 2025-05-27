@@ -8,8 +8,21 @@ const saltRounds = 10;
 
 // get home page
 export const getHome = async (req, res) => {
-    res.render("index.ejs");
-}
+  if (req.user) {
+    try {
+      const result = await db.query(
+        "SELECT id FROM books WHERE user_id = $1 LIMIT 1",
+        [req.user.id]
+      );
+      res.locals.hasBooks = result.rows.length > 0;
+    } catch (err) {
+      console.log("Error checking user books:", err);
+      res.locals.hasBooks = false;
+    }
+  }
+
+  res.render("index.ejs");
+};
 
 // get register page
 export const getRegister = async (req, res) => {

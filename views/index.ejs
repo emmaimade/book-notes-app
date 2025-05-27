@@ -7,6 +7,11 @@
     <a href="/auth/login" class="btn btn-primary btn-md">Log In</a>
     <a href="/auth/register" class="btn btn-outline-secondary btn-md">Sign‑up</a>
   <% } else { %>
-    <a href="/books" class="btn">View My Notes</a>
+    <% if (hasBooks) { %>
+      <a href="/books" class="btn btn-primary btn-md">View My Notes</a>
+      <a href="/books/add" class="btn btn-primary btn-md">Add Book</a>
+    <% } else { %>
+      <a href="/books/add" class="btn btn-primary btn-md">Add Your First Book</a>
+    <% } %>
   <% } %>
 </div>

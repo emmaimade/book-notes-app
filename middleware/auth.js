@@ -9,6 +9,8 @@
  */
 export function setUser(req, res, next) {
   res.locals.currentUser = req.user;
+
+  res.locals.hasBooks = false;
   next();
 }
 

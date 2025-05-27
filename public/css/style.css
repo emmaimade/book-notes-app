@@ -1,4 +1,10 @@
 /* Custom styles */
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
 .card .card-img-top {
     height: 220px;
     object-fit: contain;
