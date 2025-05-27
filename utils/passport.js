@@ -47,7 +47,7 @@ passport.serializeUser((user, cb) => {
 passport.deserializeUser(async (id, cb) => {
   try {
     const { rows } = await db.query(
-      "SELECT id, email FROM users WHERE id = $1",
+      "SELECT id, email, firstname, lastname FROM users WHERE id = $1",
       [id]
     );
     cb(null, rows[0] || false);

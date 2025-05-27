@@ -43,8 +43,16 @@ export const logout = (req, res) => {
 
 // register
 export const register = async (req, res) => {
+  const firstname = req.body.firstname;
+  const lastname = req.body.lastname;
   const email = req.body.email;
   const password = req.body.password;
+
+  if (password.length < 6) {
+    req.flash("error", "Password must be at least 6 characters");
+    res.render("auth/register.ejs");
+  }
+
   try {
     const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [
       email,
@@ -59,8 +67,8 @@ export const register = async (req, res) => {
           console.log("Error hashing password:", err);
         } else {
           const result = await db.query(
-            "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
-            [email, hash]
+            "INSERT INTO users (email, password, firstname, lastname) VALUES ($1, $2, $3, $4) RETURNING *",
+            [email, hash, firstname, lastname]
           );
           const user = result.rows[0];
           req.login(user, (err) => {

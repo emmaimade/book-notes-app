@@ -35,7 +35,13 @@
     <div class="container">
       <a class="navbar-brand" href="/">Book Notes</a>
       <div class="d-flex ms-auto">
-        <button class="btn btn-outline-light me-2">Welcome, <%= currentUser.email %></button>
+        <% 
+          const hour = new Date().getHours();
+          const greet = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
+        %>
+        <span class="navbar-text me-3 text-white">
+          <%= greet %>, <%= currentUser.firstname %>
+        </span>
         <a href="/auth/logout" class="btn btn-warning">Logout</a>
       </div>
     </div>

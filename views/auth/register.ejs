@@ -2,6 +2,18 @@
   <h1 class="mb-4 text-center">Register</h1>
   <form id="registerForm" action="/auth/register" method="POST" novalidate>
     <div class="mb-3">
+      <label for="firstname" class="form-label">First Name</label>
+      <input type="text" class="form-control" name="firstname" id="firstname" autocomplete="given-name" required>
+      <div class="invalid-feedback">Please enter your first name.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="lastname" class="form-label">Last Name</label>
+      <input type="text" class="form-control" name="lastname" id="lastname" autocomplete="family-name" required>
+      <div class="invalid-feedback">Please enter your last name.</div>
+    </div>
+
+    <div class="mb-3">
       <label for="email" class="form-label">E-mail</label>
       <input type="email" class="form-control" name="email" id="email" required>
       <div class="invalid-feedback">Please enter a valid email.</div>
@@ -55,12 +67,16 @@
 
   // Form validation logic (same as before)
   const form = document.getElementById('registerForm');
+  const firstname = form.firstname;
+  const lastname = form.lastname;
   const email = form.email;
   const pwd = form.password;
   const confirmPwd = form.confirmPassword;
   const submitBtn = document.getElementById('submitBtn');
 
   form.addEventListener('input', () => {
+    const firstnameValid = firstname.checkValidity();
+    const lastnameValid = lastname.checkValidity();
     const emailValid = email.checkValidity();
     const pwdValid = pwd.checkValidity();
     const match = pwd.value === confirmPwd.value && confirmPwd.value.length > 0;
@@ -72,13 +88,14 @@
       confirmPwd.classList.add('is-valid');
     }
 
-    submitBtn.disabled = !(emailValid && pwdValid && match);
+    submitBtn.disabled = !(firstnameValid && lastnameValid && emailValid && pwdValid && match);
   });
 
   form.addEventListener('submit', (e) => {
     if (!form.checkValidity() || pwd.value !== confirmPwd.value) {
       e.preventDefault();
       e.stopPropagation();
+      form.classList.add('was-validated');
     }
   });
 </script>
