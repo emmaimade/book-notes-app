@@ -83,7 +83,7 @@ export const getBookDetails = async (req, res) => {
     res.render("books/detail.ejs", { book: result.rows[0] });
   } catch (error) {
     console.log(error);
-    res.status(500).res.render("error", { message: "Internal Server Error" });
+    res.status(500).render("error", { message: "Internal Server Error" });
   }
 };
 
@@ -192,7 +192,7 @@ export const editBook = async (req, res) => {
       await db.query(query, values);
     }
 
-    res.redirect("/books/:id");
+    res.redirect(`/books/${id}`);
   } catch (error) {
     console.log("Update error:", error);
     req.flash("error", "Failed to update book");
