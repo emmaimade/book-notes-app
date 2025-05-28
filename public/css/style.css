@@ -1,3 +1,26 @@
+.hero {
+    background: url('/images/bookshelf.jpg') center/cover no-repeat;
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+    padding: 6rem 1rem;
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 0;
+}
+
+.hero>* {
+    position: relative;
+    /* lift text & buttons above overlay */
+    z-index: 2;
+}
+
 /* Custom styles */
 .card .card-img-top {
     height: 220px;

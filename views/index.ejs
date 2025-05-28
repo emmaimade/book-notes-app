@@ -1,11 +1,11 @@
 
-<div class="hero">
+<div class="hero text-center">
   <h1>Welcome to Book Notes</h1>
   <p>Your personal reading journal—keep track of what you’ve read, what you think, and how you rate each book.</p>
 
   <% if (!currentUser) { %>
     <a href="/auth/login" class="btn btn-primary btn-md">Log In</a>
-    <a href="/auth/register" class="btn btn-outline-secondary btn-md">Sign‑up</a>
+    <a href="/auth/register" class="btn btn-outline-secondary btn-md text-white">Sign‑up</a>
   <% } else { %>
     <% if (hasBooks) { %>
       <a href="/books" class="btn btn-primary btn-md">View My Notes</a>
@@ -15,3 +15,36 @@
     <% } %>
   <% } %>
 </div>
+
+<div class="container my-5">
+  <div class="row g-4 text-center">
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <i class="bi bi-journal-richtext display-4 mb-3"></i>
+          <h5 class="card-title">Easy Note-Taking</h5>
+          <p class="card-text">Quickly jot down your thoughts and summaries right after reading.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <i class="bi bi-star-fill display-4 mb-3"></i>
+          <h5 class="card-title">Rate Your Reads</h5>
+          <p class="card-text">Give each book a rating from 0–5 and track your favorites.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <i class="bi bi-search display-4 mb-3"></i>
+          <h5 class="card-title">Quick Search</h5>
+          <p class="card-text">Instantly find past notes with our live search suggestions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
