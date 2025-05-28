@@ -1,118 +1,142 @@
 # Book Notes - Track Your Reading Journey
 
-A web application to track books you've read, with notes, ratings, and automatic cover retrieval.
+**Book Notes** is a personal reading journal web application built with Node.js, Express, PostgreSQL, and EJS. Users can register, log in, and securely manage their own book notes—including titles, authors, summaries, ratings, and read dates.
 
 ## Features
 
-- 📖 Add books with title, author, ISBN, summary, and personal notes
-- ⭐ Rate books using 5-star system (supports half-star ratings)
-- 📅 Track reading dates with DD/MM/YYYY format
-- 🌄 Automatic book cover retrieval using Open Library API
-- 🔍 Search and filter books by title, author, or rating
-- ✏️ Edit existing entries with partial updates
-- 🗑️ Safe delete with confirmation dialog
-- 📱 Responsive design works on all devices
+* 🔒 **User Authentication**: Register, log in, and log out via Passport.js with secure password hashing (bcrypt).
+* ✍️ **CRUD Operations**: Create, read, update, and delete book entries tied to each user.
+* 📱 **Responsive UI**: Mobile-friendly design using Bootstrap 5 and EJS layouts.
+* 💾 **Session Persistence**: Sessions stored in PostgreSQL via connect-pg-simple, so users stay signed in across restarts.
+* 📖 **Manage Details**: Add books with title, author, ISBN, summary, and personal notes.
+* ⭐ **5-Star Rating**: Rate books using a 5-star system (supports half-star ratings).
+* 📅 **Reading Dates**: Track reading dates with DD/MM/YYYY format.
+* 🌄 **Cover Retrieval**: Automatic book cover retrieval using Open Library API.
+* 🔍 **Search & Filter**: Search and filter books by title, author, or rating.
+* ✏️ **Partial Updates**: Edit existing entries with only the changed fields.
+* 🗑️ **Safe Delete**: Delete entries with a confirmation dialog.
 
 ## Tech Stack
 
-**Frontend:**  
-EJS | Bootstrap 5 | JavaScript
+**Frontend:** EJS | Bootstrap 5 | Vanilla JavaScript
 
-**Backend:**  
-Node.js | Express | PostgreSQL
+**Backend:** Node.js | Express | PostgreSQL | Passport.js
 
-**APIs:**  
-[Open Library Covers API](https://openlibrary.org/dev/docs/api/covers)
+**APIs:** [Open Library Covers API](https://openlibrary.org/dev/docs/api/covers)
 
 ## Installation
 
 ### Prerequisites
-- PostgreSQL
-- Node.js v16+
-- npm
 
-### Setup
+* PostgreSQL
+* Node.js v16+
+* A modern web browser
+
+### Setup Steps
+
 1. Clone the repository:
-```bash
-git clone https://github.com/emmaimade/book-notes-app.git
-cd book-notes-app
-```
 
+   ```bash
+   git clone https://github.com/emmaimade/book-notes-app.git
+   cd book-notes-app
+   ```
 2. Install dependencies:
-```bash
-npm install
-```
 
-3. Database setup:
-```sql
-CREATE DATABASE book_notes;
-\c book_notes
-CREATE TABLE books (
-  id SERIAL PRIMARY KEY,
-  title VARCHAR(255) NOT NULL,
-  author VARCHAR(255) NOT NULL,
-  isbn VARCHAR(20),
-  summary TEXT,
-  notes TEXT,
-  rating DECIMAL(3,1) CHECK (rating BETWEEN 0 AND 5),
-  date_read DATE NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW()
-);
-```
+   ```bash
+   npm install
+   ```
+3. Create the database and tables:
 
-4. Create `.env` file:
-```env
-PG_USER=
-PG_HOST=
-PG_DATABASE=
-PG_PASSWORD=
-PG_PORT=
-PORT=
-```
+   ```sql
+   CREATE DATABASE book_notes;
 
+   \c book_notes;
+   CREATE TABLE users (
+     id SERIAL PRIMARY KEY,
+     firstname VARCHAR(50),
+     lastname VARCHAR(50),
+     email VARCHAR(255) UNIQUE NOT NULL,
+     password VARCHAR(255) NOT NULL,
+     created_at TIMESTAMP DEFAULT NOW()
+   );
+
+   CREATE TABLE books (
+     id SERIAL PRIMARY KEY,
+     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+     title VARCHAR(255) NOT NULL,
+     author VARCHAR(255) NOT NULL,
+     isbn VARCHAR(20),
+     summary TEXT,
+     notes TEXT,
+     rating DECIMAL(3,1) CHECK (rating BETWEEN 0 AND 5),
+     date_read DATE NOT NULL,
+     created_at TIMESTAMP DEFAULT NOW()
+   );
+   ```
+4. Create a `.env` file in the project root:
+
+   ```env
+   PG_USER=<your_pg_user>
+   PG_HOST=localhost
+   PG_DATABASE=book_notes
+   PG_PASSWORD=<your_pg_password>
+   PG_PORT=5432
+   PORT=3000
+   SESSION_SECRET=<a_random_secret>
+   ```
 5. Start the server:
-```bash
-npm start
-```
 
-Visit `http://localhost:3000` in your browser!
+   ```bash
+   npm start
+   ```
+6. Open your browser and visit `http://localhost:3000`.
+
+## Project Structure
+
+```
+book-notes-app/
+├── config/
+│   └── db.js              # PostgreSQL pool config
+├── controllers/
+│   ├── authController.js
+│   └── bookController.js
+├── middleware/
+│   └── auth.js            # setUser & ensureAuth
+├── routes/
+│   ├── authRoute.js
+│   └── booksRoute.js
+├── utils/
+│   └── passport.js        # Passport strategy setup
+├── views/
+│   ├── partials/
+│   │   ├── footer.ejs
+│   │   ├── header.ejs
+│   │   └── book-card.ejs
+│   ├── auth/
+│   │   ├── login.ejs
+│   │   └── register.ejs
+│   ├── books/
+│   │   ├── list.ejs
+│   │   ├── add.ejs
+│   │   ├── edit.ejs
+│   │   └── detail.ejs
+│   ├── index.ejs
+│   ├── layout.ejs
+│   └── error.ejs
+├── public/
+│   ├── css/
+│   └── images/
+├── .env
+├── package.json
+└── README.md
+```
 
 ## Usage
 
-### Adding a Book
-1. Click "+ Add Book" in navigation
-2. Fill in required fields (Title, Author, ISBN, Date Read)
-3. Add optional details (Rating, Summary, Notes)
-4. Submit form
-
-### Viewing Details
-- Click any book card to see full details
-- View star rating, full summary, and notes
-- See book cover (automatically retrieved via ISBN)
-
-### Editing Entries
-1. Click "Edit" on book details page
-2. Modify any fields (only changed fields will update)
-3. Save changes
-
-### Deleting Books
-1. Click "Delete" on book details page
-2. Confirm deletion in dialog
-3. Automatically redirected to book list
-
-## API Reference
-
-| Endpoint           | Method | Description                     |
-|--------------------|--------|---------------------------------|
-| /books             | GET    | Get all books (supports sorting)|
-| /books/:id         | GET    | Get single book details         |
-| /books/add         | GET    | Display add book form           |
-| /books/edit/:id    | GET    | Display edit book form          |
-| /books             | POST   | Create new book entry           |
-| /books/:id         | POST   | Partial update book details     |
-| /books/delete/:id  | POST   | Delete a book                   |
-| /book-cover/:isbn  | GET    | Book cover proxy endpoint       |
-
+* **Add a Book:** Click **Add Book**, fill in details, and submit.
+* **View Details:** Click a book to see full summary, notes, and rating.
+* **Edit:** Click **Edit** on a book detail page to modify any fields.
+* **Delete:** Click **Delete** and confirm to remove a book.
 
 ## Acknowledgments
 
@@ -120,3 +144,7 @@ Visit `http://localhost:3000` in your browser!
 - Open Library for their excellent book data API
 - Bootstrap for responsive UI components
 - Font Awesome for icons
+
+## License
+
+This project is licensed under the MIT License.
